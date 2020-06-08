@@ -261,6 +261,28 @@ async def info(ctx):
 
 # --------------------- End Info command --------------------- #
 
+# ----------------------- guide command ---------------------- #
+
+@client.command('guide')
+async def guide(ctx):
+    response = '''
+    Hello, I am Wilbur. Your referral partner.
+
+    I am here to help you to get the number of how many people referred to you. In order to refer to someone you need to use `!wilbur referral @Member` on referral channel.
+    If you don't know where the referral channel is, you can use `!wilbur referral_channel` command. Here is how I work:
+
+    1. You have to be in referral channel to use `!wilbur referral @Member` command
+    2. Once you typed that, the member you mentioned gains 1 number of referrals count
+    3. You can only use `!wilbur referral @Member` command **once**. So, use it wisely to refer to your friend who invited you.
+    4. If you want to check your referral info, type `!wilbur info`
+
+    I am looking forward to work with you guys. Please use my commands correctly. If you want to know what commands are available, type `!wilbur help`.
+    Thank you guys! You are Awesome!
+    '''
+    ctx.send(response)
+
+# -------------------- End guide command --------------------- #
+
 # ----- Set, Get, and Delete custom alias for a channel ------ #
 
 @commands.has_permissions(administrator=True)
