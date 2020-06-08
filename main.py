@@ -279,7 +279,7 @@ async def guide(ctx):
     I am looking forward to work with you guys. Please use my commands correctly. If you want to know what commands are available, type `!wilbur help`.
     Thank you guys! You are Awesome!
     '''
-    ctx.send(response)
+    await ctx.send(response)
 
 # -------------------- End guide command --------------------- #
 
