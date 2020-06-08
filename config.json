@@ -1,0 +1,11 @@
+{
+    "_default": {
+        "1": {
+            "server_id": 717734701691043931,
+            "server_name": "Wilbur Bot Test Server",
+            "prefix": ".",
+            "referral_channel_id": 718849578744545381,
+            "channels_aliases": {}
+        }
+    }
+}
