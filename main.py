@@ -214,13 +214,13 @@ async def referral(ctx, member : discord.User):
             DB_CHECK.insert(dict(referrer_id=referrer.id, referrer_name=referrer.name, member_id=member.id, member_name=member.name))
             await ctx.message.add_reaction("✅")
         elif (len(check_row) == 1):
-            await ctx.send(f"Uh Oh! Looks like <@{referrer.id}> already referred to <@{check_row[0]['member_id']}>. You cannot change your referral to them")
+            await ctx.send(f"Uh Oh! Looks like <@{referrer.id}> already referred to <@{check_row[0]['member_id']}>. You cannot change your referral now.")
             await ctx.message.add_reaction("❌")
     elif (ctx.channel.id != referral_channel_id):
-        await ctx.send(f"Roger! You should use this command on referral channel. To get referral channel, type `{BOT_PREFIX}referral_channel` command")
+        await ctx.send(f"Roger! You should use this command on referral channel. To get referral channel, type `{BOT_PREFIX}referral_channel` command.")
         await ctx.message.add_reaction("❌")
     elif (member.id == ctx.author.id):
-        await ctx.send(f"Uh Oh! You **cannot** refer to yourself. Be thankful to the person who invited you by typing `{BOT_PREFIX}referral @[Your friend]`")
+        await ctx.send(f"Uh Oh! You **cannot** refer to yourself. Be thankful to the person who invited you by typing `{BOT_PREFIX}referral @[Your friend]`.")
         await ctx.message.add_reaction("❌")
 
 @referral.error
