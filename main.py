@@ -23,7 +23,7 @@ async def check_referral_rank(db,n_people,referral_rank,message,member):
         role_new = discord.utils.get(message.guild.roles, name="Evangelist")
         db.update({"referral_rank":"Evangelist"}, Query().member_id == member.id)
         await member.add_roles(role_new)
-        await message.channel.send(f"Roger! <@{str(member.id)}> is an Evangelist. To check your referral info, use `{BOT_PREFIX} check` command.")
+        await message.channel.send(f"Roger! <@{str(member.id)}> is an Evangelist. To check your referral info, use `{BOT_PREFIX}check` command.")
     elif (n_people >= 15) and (n_people < 20) and (referral_rank != "Believer"): # If referrers count is in between 15 and 19 and rank is not Believer
         try: # try to get role and removes it if there is existing role
             role_old = discord.utils.get(message.guild.roles, name=referral_rank)
@@ -34,9 +34,9 @@ async def check_referral_rank(db,n_people,referral_rank,message,member):
         db.update({"referral_rank":"Believer"}, Query().member_id == member.id)
         await member.add_roles(role_new)
         if referral_rank == "Evangelist":
-            await message.channel.send(f"<@{str(member.id)}>'s referred friends decreased to {n_people}. Your rank is now down to Believer! Check your referral info with `{BOT_PREFIX} info`")
+            await message.channel.send(f"<@{str(member.id)}>'s referred friends decreased to {n_people}. Your rank is now down to Believer! Check your referral info with `{BOT_PREFIX}info`")
         else:
-            await message.channel.send(f"Roger! <@{str(member.id)}> is a Believer. To check your referral info, use `{BOT_PREFIX} info` command.")
+            await message.channel.send(f"Roger! <@{str(member.id)}> is a Believer. To check your referral info, use `{BOT_PREFIX}info` command.")
     elif (n_people >= 5) and (n_people < 15) and (referral_rank != "Samaritan"): # If referrers count is in between 5 and 14 and rank is not Samaritan
         try: # try to get role and removes it if there is existing role
             role_old = discord.utils.get(message.guild.roles, name=referral_rank)
@@ -47,9 +47,9 @@ async def check_referral_rank(db,n_people,referral_rank,message,member):
         db.update({"referral_rank":"Samaritan"}, Query().member_id == member.id)
         await member.add_roles(role_new)
         if referral_rank in ["Believer","Evangelist"]:
-            await message.channel.send(f"Roger! <@{str(member.id)}>'s referred friends decreased to {n_people}. Your rank is now Samaritan! Check your referral info with `{BOT_PREFIX} info`")
+            await message.channel.send(f"Roger! <@{str(member.id)}>'s referred friends decreased to {n_people}. Your rank is now Samaritan! Check your referral info with `{BOT_PREFIX}info`")
         else:
-            await message.channel.send(f"Roger! <@{str(member.id)}> is a Samaritan. To check your referral information, use `{BOT_PREFIX} info` command.")
+            await message.channel.send(f"Roger! <@{str(member.id)}> is a Samaritan. To check your referral information, use `{BOT_PREFIX}info` command.")
     elif (n_people < 5) and (referral_rank != "Unranked"): # If referrer count is below 5 and rank is not Unranked
         try: # try to get role and removes it if there is existing role
             role_old = discord.utils.get(message.guild.roles, name=referral_rank)
@@ -58,12 +58,12 @@ async def check_referral_rank(db,n_people,referral_rank,message,member):
             pass
         db.update({"referral_rank":"Unranked"}, Query().member_id == member.id)
         if referral_rank in ["Samaritan","Believer","Evangelist"]:
-            await message.channel.send(f"Roger! <@{str(member.id)}> is now Unranked. To check your referral information, use `{BOT_PREFIX} info` command.")
+            await message.channel.send(f"Roger! <@{str(member.id)}> is now Unranked. To check your referral information, use `{BOT_PREFIX}info` command.")
 
 @client.event
 async def on_ready():
     print("Wilbur bot is ready!")
-    await client.change_presence(activity = discord.Activity(name = "Wilbur's backup", type = 2))
+    await client.change_presence(activity = discord.Activity(name = "joins", type = 2))
 
 @client.event
 async def on_guild_join(guild):
@@ -101,7 +101,7 @@ async def on_message(message):
     Member = Query()
     DB_REFERRAL = await get_db('referral.json')
     if (message.content.startswith('!wilber')):
-        await message.channel.send(f"Wilber?! Did you just misspell my name? It's Wilbur! Please use `{BOT_PREFIX} help` to check what I can do")
+        await message.channel.send(f"Wilber?! Did you just misspell my name? It's Wilbur! Please use `{BOT_PREFIX}help` to check what I can do")
 
     try: 
         row = DB_REFERRAL.search(Member.member_id == member.id)[0]
@@ -119,30 +119,30 @@ async def on_message(message):
 @client.command('help')
 async def help(ctx):
     embed = discord.Embed(title="**Admin's Wilbur Command List**",
-                        description=f"All Wilbur's usable commands. You just need to type {BOT_PREFIX} command to see how it works.",
+                        description=f"All Wilbur's usable commands. You just need to type {BOT_PREFIX}command to see how it works.",
                         color=discord.Color.blue()
                         )
-    embed.add_field(name="1. Check referral information (referrals count, referral rank, etc.)", value=f"{BOT_PREFIX} info")
-    embed.add_field(name="2. Check my invitation links info (if You made some)", value=f"{BOT_PREFIX} invites")
-    embed.add_field(name="3. Give referral to the person who invited you to this server", value=f"{BOT_PREFIX} referral")
-    embed.add_field(name="4. Set current channel as referral channel", value=f"{BOT_PREFIX} set_referral_channel")
-    embed.add_field(name="5. Get where the referral channel is", value=f"{BOT_PREFIX} referral_channel")
-    embed.add_field(name="6. Get all channels aliases", value=f"{BOT_PREFIX} channels_aliases")
-    embed.add_field(name="7. Set current channel's alias", value=f"{BOT_PREFIX} set_channel [alias]")
-    embed.add_field(name="8. Get channel for alias", value=f"{BOT_PREFIX} get_channel [alias]")
-    embed.add_field(name="9. Delete channel alias", value=f"{BOT_PREFIX} delete_channel [alias]")
-    embed.add_field(name="10. Send message using wilbur to alias channel", value=f"{BOT_PREFIX} send_channel [alias] [message]")
+    embed.add_field(name="1. Check referral information (referrals count, referral rank, etc.)", value=f"{BOT_PREFIX}info")
+    embed.add_field(name="2. Check my invitation links info (if You made some)", value=f"{BOT_PREFIX}invites")
+    embed.add_field(name="3. Give referral to the person who invited you to this server", value=f"{BOT_PREFIX}referral")
+    embed.add_field(name="4. Set current channel as referral channel", value=f"{BOT_PREFIX}set_referral_channel")
+    embed.add_field(name="5. Get where the referral channel is", value=f"{BOT_PREFIX}referral_channel")
+    embed.add_field(name="6. Get all channels aliases", value=f"{BOT_PREFIX}channels_aliases")
+    embed.add_field(name="7. Set current channel's alias", value=f"{BOT_PREFIX}set_channel [alias]")
+    embed.add_field(name="8. Get channel for alias", value=f"{BOT_PREFIX}get_channel [alias]")
+    embed.add_field(name="9. Delete channel alias", value=f"{BOT_PREFIX}delete_channel [alias]")
+    embed.add_field(name="10. Send message using wilbur to alias channel", value=f"{BOT_PREFIX}send_channel [alias] [message]")
     await ctx.send(embed=embed)
 
 @help.error
 async def help_error(ctx,error):
     embed = discord.Embed(title="**Wilbur Command List**",
-                        description=f"All Wilbur's usable commands. You just need to type {BOT_PREFIX} command to see how it works.",
+                        description=f"All Wilbur's usable commands. You just need to type {BOT_PREFIX}command to see how it works.",
                         color=discord.Color.blue()
                         )
-    embed.add_field(name="1. Check referral information (referrals count, referral rank, etc.)", value=f"{BOT_PREFIX} info")
-    embed.add_field(name="2. Check my invitation links info (if You made some)", value=f"{BOT_PREFIX} invites")
-    embed.add_field(name="3. Give referral to the person who invited you to this server", value=f"{BOT_PREFIX} referral")
+    embed.add_field(name="1. Check referral information (referrals count, referral rank, etc.)", value=f"{BOT_PREFIX}info")
+    embed.add_field(name="2. Check my invitation links info (if You made some)", value=f"{BOT_PREFIX}invites")
+    embed.add_field(name="3. Give referral to the person who invited you to this server", value=f"{BOT_PREFIX}referral")
     await ctx.send(embed=embed)
 
 # --------------------- End help command -------------------- #
@@ -170,7 +170,7 @@ async def referral_channel(ctx):
         channel = client.get_channel(server_row[0]["referral_channel_id"])
         await ctx.send(f"Roger! Your server's referral channel is {channel.mention}")
     else:
-        await ctx.send(f"Roger! You haven't set a referral channel. Please type `{BOT_PREFIX} set_referral_channel` in a channel to make it into referral channel")
+        await ctx.send(f"Roger! You haven't set a referral channel. Please type `{BOT_PREFIX}set_referral_channel` in a channel to make it into referral channel")
 
 # -------- End set and get referral channel command -------- #
 
@@ -215,14 +215,14 @@ async def referral(ctx, member : discord.User):
         elif (len(check_row) == 1):
             await ctx.send(f"Uh Oh! Looks like <@{referrer.id}> already referred to <@{check_row[0]['member_id']}>. You cannot change your referral to him/her")
     elif (ctx.channel.id != referral_channel_id):
-        await ctx.send(f"Roger! You should use this command on referral channel. To get referral channel, type `{BOT_PREFIX} referral_channel` command")
+        await ctx.send(f"Roger! You should use this command on referral channel. To get referral channel, type `{BOT_PREFIX}referral_channel` command")
     elif (member.id == ctx.author.id):
-        await ctx.send(f"Uh Oh! You **cannot** refer to yourself. Be thankful to the person who invited you by typing `{BOT_PREFIX} referral @[Your friend]`")
+        await ctx.send(f"Uh Oh! You **cannot** refer to yourself. Be thankful to the person who invited you by typing `{BOT_PREFIX}referral @[Your friend]`")
 
 @referral.error
 async def referral_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send(f"```You can only use this command on referral channel (type {BOT_PREFIX}r referral_channel to get referral channel). Example of proper usage:\n\n{BOT_PREFIX} referral @Username```")
+        await ctx.send(f"```You can only use this command on referral channel (type {BOT_PREFIX}referral_channel to get referral channel). Example of proper usage:\n\n{BOT_PREFIX}referral @Username```")
 
 # ------------------ End referral command ------------------ #
 
@@ -264,7 +264,7 @@ async def info(ctx):
         embed.add_field(name="Referrals Count", value=referrer_row["referrer_count"], inline=True)
         await ctx.send(embed=embed)
     except:
-        await ctx.send(f"```You don't have any referral information. Ask your invited friends to refer to you by typing '{BOT_PREFIX} referral @[Your Username]' command on referral channel (type {BOT_PREFIX} referral_channel to get referral channel)```")
+        await ctx.send(f"```You don't have any referral information. Ask your invited friends to refer to you by typing '{BOT_PREFIX}referral @[Your Username]' command on referral channel (type {BOT_PREFIX}referral_channel to get referral channel)```")
 
 # --------------------- End Info command --------------------- #
 
