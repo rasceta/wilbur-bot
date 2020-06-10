@@ -14,42 +14,42 @@ async def get_db(filename):
 
 async def check_referral_rank(db,n_people,referral_rank,message,member):
     # Rank Up
-    if (n_people >= 20) and (referral_rank != "Evangelist"): # If referrers count is 20 or more and rank is not Evangelist
+    if (n_people >= 20) and (referral_rank != "Host"): # If referrers count is 20 or more and rank is not Host
         try: # try to get role and removes it if there is existing role
             role_old = discord.utils.get(message.guild.roles, name=referral_rank)
             await member.remove_roles(role_old)
         except:
             pass
-        role_new = discord.utils.get(message.guild.roles, name="Evangelist")
-        db.update({"referral_rank":"Evangelist"}, Query().member_id == member.id)
+        role_new = discord.utils.get(message.guild.roles, name="Host")
+        db.update({"referral_rank":"Host"}, Query().member_id == member.id)
         await member.add_roles(role_new)
-        await message.channel.send(f"Roger! <@{str(member.id)}> is an Evangelist. To check your referral info, use `{BOT_PREFIX}check` command.")
-    elif (n_people >= 15) and (n_people < 20) and (referral_rank != "Believer"): # If referrers count is in between 15 and 19 and rank is not Believer
+        await message.channel.send(f"Roger! <@{str(member.id)}> is a Host. To check your referral info, use `{BOT_PREFIX}check` command.")
+    elif (n_people >= 15) and (n_people < 20) and (referral_rank != "Recruiter"): # If referrers count is in between 15 and 19 and rank is not Recruiter
         try: # try to get role and removes it if there is existing role
             role_old = discord.utils.get(message.guild.roles, name=referral_rank)
             await member.remove_roles(role_old)
         except:
             pass
-        role_new = discord.utils.get(message.guild.roles, name="Believer")
-        db.update({"referral_rank":"Believer"}, Query().member_id == member.id)
+        role_new = discord.utils.get(message.guild.roles, name="Recruiter")
+        db.update({"referral_rank":"Recruiter"}, Query().member_id == member.id)
         await member.add_roles(role_new)
-        if referral_rank == "Evangelist":
-            await message.channel.send(f"<@{str(member.id)}>'s referred friends decreased to {n_people}. Your rank is now down to Believer! Check your referral info with `{BOT_PREFIX}info`")
+        if referral_rank == "Host":
+            await message.channel.send(f"<@{str(member.id)}>'s referred friends decreased to {n_people}. Your rank is now down to Recruiter! Check your referral info with `{BOT_PREFIX}info`")
         else:
-            await message.channel.send(f"Roger! <@{str(member.id)}> is a Believer. To check your referral info, use `{BOT_PREFIX}info` command.")
-    elif (n_people >= 5) and (n_people < 15) and (referral_rank != "Samaritan"): # If referrers count is in between 5 and 14 and rank is not Samaritan
+            await message.channel.send(f"Roger! <@{str(member.id)}> is a Recruiter. To check your referral info, use `{BOT_PREFIX}info` command.")
+    elif (n_people >= 5) and (n_people < 15) and (referral_rank != "Broadcaster"): # If referrers count is in between 5 and 14 and rank is not Broadcaster
         try: # try to get role and removes it if there is existing role
             role_old = discord.utils.get(message.guild.roles, name=referral_rank)
             await member.remove_roles(role_old)
         except:
             pass
-        role_new = discord.utils.get(message.guild.roles, name="Samaritan")
-        db.update({"referral_rank":"Samaritan"}, Query().member_id == member.id)
+        role_new = discord.utils.get(message.guild.roles, name="Broadcaster")
+        db.update({"referral_rank":"Broadcaster"}, Query().member_id == member.id)
         await member.add_roles(role_new)
-        if referral_rank in ["Believer","Evangelist"]:
-            await message.channel.send(f"Roger! <@{str(member.id)}>'s referred friends decreased to {n_people}. Your rank is now Samaritan! Check your referral info with `{BOT_PREFIX}info`")
+        if referral_rank in ["Recruiter","Host"]:
+            await message.channel.send(f"Roger! <@{str(member.id)}>'s referred friends decreased to {n_people}. Your rank is now Broadcaster! Check your referral info with `{BOT_PREFIX}info`")
         else:
-            await message.channel.send(f"Roger! <@{str(member.id)}> is a Samaritan. To check your referral information, use `{BOT_PREFIX}info` command.")
+            await message.channel.send(f"Roger! <@{str(member.id)}> is a Broadcaster. To check your referral information, use `{BOT_PREFIX}info` command.")
     elif (n_people < 5) and (referral_rank != "Unranked"): # If referrer count is below 5 and rank is not Unranked
         try: # try to get role and removes it if there is existing role
             role_old = discord.utils.get(message.guild.roles, name=referral_rank)
@@ -57,7 +57,7 @@ async def check_referral_rank(db,n_people,referral_rank,message,member):
         except:
             pass
         db.update({"referral_rank":"Unranked"}, Query().member_id == member.id)
-        if referral_rank in ["Samaritan","Believer","Evangelist"]:
+        if referral_rank in ["Broadcaster","Recruiter","Host"]:
             await message.channel.send(f"Roger! <@{str(member.id)}> is now Unranked. To check your referral information, use `{BOT_PREFIX}info` command.")
 
 @client.event
@@ -101,7 +101,7 @@ async def on_message(message):
     Member = Query()
     DB_REFERRAL = await get_db('referral.json')
     if (message.content.startswith('!wilber')):
-        await message.channel.send(f"Wilber?! Did you just misspell my name? It's Wilbur! Please use `{BOT_PREFIX}help` to check what I can do")
+        await message.channel.send(f"Wilber?! Did you just misspell my name? It's Wilbur! Please use `{BOT_PREFIX}help` to see what I can do")
 
     try: 
         row = DB_REFERRAL.search(Member.member_id == member.id)[0]
@@ -125,13 +125,16 @@ async def help(ctx):
     embed.add_field(name="1. Check referral information (referrals count, referral rank, etc.)", value=f"{BOT_PREFIX}info")
     embed.add_field(name="2. Check my invitation links info (if You made some)", value=f"{BOT_PREFIX}invites")
     embed.add_field(name="3. Give referral to the person who invited you to this server", value=f"{BOT_PREFIX}referral")
-    embed.add_field(name="4. Set current channel as referral channel", value=f"{BOT_PREFIX}set_referral_channel")
-    embed.add_field(name="5. Get where the referral channel is", value=f"{BOT_PREFIX}referral_channel")
-    embed.add_field(name="6. Get all channels aliases", value=f"{BOT_PREFIX}channels_aliases")
-    embed.add_field(name="7. Set current channel's alias", value=f"{BOT_PREFIX}set_channel [alias]")
-    embed.add_field(name="8. Get channel for alias", value=f"{BOT_PREFIX}get_channel [alias]")
-    embed.add_field(name="9. Delete channel alias", value=f"{BOT_PREFIX}delete_channel [alias]")
-    embed.add_field(name="10. Send message using wilbur to alias channel", value=f"{BOT_PREFIX}send_channel [alias] [message]")
+    embed.add_field(name="4. Rollback (unrefer) your referral if you referred to anyone", value=f"{BOT_PREFIX}unrefer")
+    embed.add_field(name="5. Show Referrals Leaderboard (Top 10)", value=f"{BOT_PREFIX}leaderboard")
+    embed.add_field(name="6. Update Members' Referral rank", value=f"{BOT_PREFIX}update_rank")
+    embed.add_field(name="7. Set current channel as referral channel", value=f"{BOT_PREFIX}set_referral_channel")
+    embed.add_field(name="8. Get where the referral channel is", value=f"{BOT_PREFIX}referral_channel")
+    embed.add_field(name="9. Get all channels aliases", value=f"{BOT_PREFIX}channels_aliases")
+    embed.add_field(name="10. Set current channel's alias", value=f"{BOT_PREFIX}set_channel [alias]")
+    embed.add_field(name="11. Get channel for alias", value=f"{BOT_PREFIX}get_channel [alias]")
+    embed.add_field(name="12. Delete channel alias", value=f"{BOT_PREFIX}delete_channel [alias]")
+    embed.add_field(name="13. Send message using wilbur to alias channel", value=f"{BOT_PREFIX}send_channel [alias] [message]")
     await ctx.send(embed=embed)
 
 @help.error
@@ -143,6 +146,8 @@ async def help_error(ctx,error):
     embed.add_field(name="1. Check referral information (referrals count, referral rank, etc.)", value=f"{BOT_PREFIX}info")
     embed.add_field(name="2. Check my invitation links info (if You made some)", value=f"{BOT_PREFIX}invites")
     embed.add_field(name="3. Give referral to the person who invited you to this server", value=f"{BOT_PREFIX}referral")
+    embed.add_field(name="4. Rollback (unrefer) your referral if you referred to anyone", value=f"{BOT_PREFIX}unrefer")
+    embed.add_field(name="5. Show Referrals Leaderboard (Top 10)", value=f"{BOT_PREFIX}leaderboard")
     await ctx.send(embed=embed)
 
 # --------------------- End help command -------------------- #
@@ -174,7 +179,37 @@ async def referral_channel(ctx):
 
 # -------- End set and get referral channel command -------- #
 
-# --------- referral command to refers to @member ---------- #
+# --------------- Admin's update rank command -------------- #
+
+@commands.has_permissions(administrator=True)
+@client.command('update_rank')
+async def update_rank(ctx):
+    DB_REFERRAL = await get_db('referral.json')
+    Member = Query()
+
+    for row in DB_REFERRAL.all():
+        referral_rank = row["referral_rank"]
+        member_id = row["member_id"]
+        member = discord.utils.find(lambda m: m.id == member_id, ctx.channel.guild.members)
+        if referral_rank == "Samaritan":
+            DB_REFERRAL.update({"referral_rank": "Broadcaster"},Member.member_id == member_id)
+            role = discord.utils.get(ctx.message.guild.roles, name="Broadcaster")
+            await member.add_roles(role)
+        elif referral_rank == "Believer":
+            DB_REFERRAL.update({"referral_rank": "Recruiter"},Member.member_id == member_id)
+            role = discord.utils.get(ctx.message.guild.roles, name="Recruiter")
+            await member.add_roles(role)
+        elif referral_rank == "Evangelist":
+            DB_REFERRAL.update({"referral_rank": "Host"},Member.member_id == member_id)
+            role = discord.utils.get(ctx.message.guild.roles, name="Host")
+            await member.add_roles(role)
+        elif referral_rank in ["Broadcaster", "Recruiter", "Host"]:
+            role = discord.utils.get(ctx.message.guild.roles, name=referral_rank)
+            await member.add_roles(role)
+
+# ------------- End admin's update rank command ------------ #
+
+# --- referral and unrefer command to refers to @member ---- #
 
 @commands.has_role('Members')
 @client.command('referral')
@@ -228,7 +263,66 @@ async def referral_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
         await ctx.send(f"```You can only use this command on referral channel (type {BOT_PREFIX}referral_channel to get referral channel). Example of proper usage:\n\n{BOT_PREFIX}referral @Username```")
 
-# ------------------ End referral command ------------------ #
+@commands.has_role('Members')
+@client.command('unrefer')
+async def unrefer(ctx):
+    DB_CHECK = await get_db('check_referral.json')
+    DB_REFERRAL = await get_db('referral.json')
+    DB_CONFIG = await get_db('config.json')
+
+    Check = Query()
+    Referral = Query()
+    Config = Query()
+
+    referrer = ctx.author
+    referrer_id = referrer.id
+    referrer_name = referrer.name
+    check_row = DB_CHECK.search(Check.referrer_id == referrer_id)
+    config_row = DB_CONFIG.search(Config.server_id == ctx.guild.id)
+    referral_channel_id = config_row[0]["referral_channel_id"]
+
+    if (ctx.channel.id == referral_channel_id):
+        if (len(check_row) == 1):
+            member_id = check_row[0]["member_id"]
+            referral_row = DB_REFERRAL.search(Referral.member_id == member_id)
+            list_referrer_id = referral_row[0]["list_referrer_id"]
+            list_referrer_name = referral_row[0]["list_referrer_name"]
+            list_referrer_id.remove(referrer_id)
+            list_referrer_name.remove(referrer_name)
+            DB_CHECK.remove(Check.referrer_id == referrer_id)
+            DB_REFERRAL.update({"list_referrer_id":list_referrer_id, "list_referrer_name":list_referrer_name, "referrer_count":len(list_referrer_id)}, Check.member_id == member_id)
+            await ctx.send(f"Roger! <@{referrer_id}> has unreferred <@{member_id}>")
+            await ctx.message.add_reaction("✅")
+        else:
+            await ctx.send(f"Roger! You cannot unrefer when you haven't referred to a Member yet.")
+            await ctx.message.add_reaction("❌")
+
+# ------------ End referral and unrefer command ------------ #
+
+# ------------------- leaderboard command ------------------ #
+
+@client.command('leaderboard')
+async def leaderboard(ctx):
+    DB_REFERRAL = await get_db('referral.json')
+
+    list_all_referrals = [{'Member':m['member_name'], 'Referrals': m['referrer_count'], 'Rank': m['referral_rank']} for m in DB_REFERRAL.all()]
+    list_leaderboard = sorted(list_all_referrals, key=lambda k: k['Referrals'], reverse=True)
+
+    response = ""
+    if len(list_leaderboard) <= 10:
+        for i in range(0,len(list_leaderboard)):
+            response =  response + f"#**{i+1}** Member : **{list_leaderboard[i]['Member']}**, Referrals : **{list_leaderboard[i]['Referrals']}**, Rank : **{list_leaderboard[i]['Rank']}** \n"
+    else:
+        for i in range(0,10):
+            response =  response + f"#**{i+1}** Member : **{list_leaderboard[i]['Member']}**, Referrals : **{list_leaderboard[i]['Referrals']}**, Rank : **{list_leaderboard[i]['Rank']}** \n"
+
+    embed = discord.Embed(title="**Referrals Leaderboard (Top 10)**",
+                            description=response,
+                            color=discord.Color.blue()
+                            )
+    await ctx.send(embed=embed)
+
+# ----------------- End leaderboard command ---------------- #
 
 # -------- invites command to show invitation links -------- #
 
