@@ -3,7 +3,7 @@ import os
 from tinydb import TinyDB, Query
 from discord.ext import commands
 
-client = commands.Bot('!wilbur ')
+client = commands.Bot(('!wilbur ','!Wilbur ', '!w ', '!W '))
 BOT_PREFIX = client.command_prefix
 TOKEN = os.environ.get('WILBUR_TOKEN')
 
