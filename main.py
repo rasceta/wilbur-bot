@@ -212,7 +212,7 @@ async def update_rank(ctx):
 # --- referral and unrefer command to refers to @member ---- #
 
 @commands.has_role('Members')
-@client.command('referral')
+@client.command(name='referral',aliases=['refer','r'])
 async def referral(ctx, member : discord.User):
     DB_REFERRAL = await get_db('referral.json')
     DB_CHECK = await get_db('check_referral.json')
